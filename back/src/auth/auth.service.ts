@@ -31,7 +31,7 @@ export class AuthService {
 		}
 	}
 	async getNewTokens({ refreshToken }: RefreshTokenDto) {
-		if (refreshToken) {
+		if (!refreshToken) {
 			throw new UnauthorizedException('Пожалуйста войдите в систему')
 		}
 
