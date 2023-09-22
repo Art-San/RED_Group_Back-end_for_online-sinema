@@ -1,3 +1,4 @@
+import { RefreshTokenDto } from './dto/refreshToken.dto'
 import { AuthDto } from './dto/auth.dto'
 import { AuthService } from './auth.service'
 import {
@@ -18,6 +19,13 @@ export class AuthController {
 	@Post('login')
 	async login(@Body() dto: AuthDto) {
 		return this.AuthService.login(dto)
+	}
+
+	@UsePipes(new ValidationPipe())
+	@HttpCode(200)
+	@Post('login/access-token')
+	async getNewTokens(@Body() dto: RefreshTokenDto) {
+		return this.AuthService.getNewTokens(dto)
 	}
 
 	@UsePipes(new ValidationPipe())

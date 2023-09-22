@@ -10,6 +10,7 @@ import { hash, genSalt, compare } from 'bcryptjs'
 import { AuthDto } from './dto/auth.dto'
 import { UserModel } from 'src/user/user.model'
 import { JwtService } from '@nestjs/jwt'
+import { RefreshTokenDto } from './dto/refreshToken.dto'
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,25 @@ export class AuthService {
 		// return this.validateUser(dto)
 		const user = await this.validateUser(dto)
 
+		const tokens = await this.issueTokenPair(String(user._id))
+
+		return {
+			user: this.returnUserFields(user),
+			...tokens,
+		}
+	}
+	async getNewTokens({ refreshToken }: RefreshTokenDto) {
+		if (refreshToken) {
+			throw new UnauthorizedException('Пожалуйста войдите в систему')
+		}
+
+		const result = await this.jwtService.verifyAsync(refreshToken)
+		if (!result) {
+			throw new UnauthorizedException(
+				'Неверный токен или срок его действия истек'
+			)
+		}
+		const user = await this.UserModel.findById(result._id)
 		const tokens = await this.issueTokenPair(String(user._id))
 
 		return {
