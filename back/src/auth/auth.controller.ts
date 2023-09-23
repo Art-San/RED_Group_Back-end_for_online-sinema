@@ -15,7 +15,7 @@ export class AuthController {
 	constructor(private readonly AuthService: AuthService) {}
 
 	@UsePipes(new ValidationPipe())
-	@HttpCode(200)
+	@HttpCode(200) // Ставим везде где Put или Post
 	@Post('login')
 	async login(@Body() dto: AuthDto) {
 		return this.AuthService.login(dto)
