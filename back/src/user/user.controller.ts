@@ -22,7 +22,7 @@ export class UserController {
 
 	@Get('profile')
 	// @Auth('admin')
-	@Auth()
+	@Auth() // Самописный декоратор user || admin
 	async getProfile(@User('_id') _id: string) {
 		return this.userService.byId(_id)
 	}
@@ -31,6 +31,7 @@ export class UserController {
 	@Put('profile') // обновление юзера
 	@HttpCode(200) //Ставим 200 везде где Put или Post
 	@Auth() // Должен быть авторизован
+	// @User custom-decorators
 	async updateProfile(@User('_id') _id: string, @Body() dto: UpdateUserDto) {
 		// сам юзер обновляет данные
 		return this.userService.updateProfile(_id, dto)

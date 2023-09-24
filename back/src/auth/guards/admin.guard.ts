@@ -1,3 +1,4 @@
+// Для админа
 import {
 	CanActivate,
 	ExecutionContext,
@@ -7,8 +8,9 @@ import {
 import { Reflector } from '@nestjs/core'
 import { UserModel } from 'src/user/user.model'
 
-@Injectable()
+@Injectable() // implements-реализует используем CanActivate так как это самапис
 export class OnlyAdminGuard implements CanActivate {
+	// OnlyAdminGuard только для админа
 	constructor(private reflector: Reflector) {}
 	canActivate(context: ExecutionContext): boolean {
 		const request = context.switchToHttp().getRequest<{ user: UserModel }>()

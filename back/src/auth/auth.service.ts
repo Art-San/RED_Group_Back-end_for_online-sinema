@@ -30,19 +30,20 @@ export class AuthService {
 			...tokens,
 		}
 	}
+	// ПОЛУЧЕНИЕ НОВОГО ТОКЕНА
 	async getNewTokens({ refreshToken }: RefreshTokenDto) {
 		if (!refreshToken) {
 			throw new UnauthorizedException('Пожалуйста войдите в систему')
 		}
 
-		const result = await this.jwtService.verifyAsync(refreshToken)
+		const result = await this.jwtService.verifyAsync(refreshToken) // Верификация токена
 		if (!result) {
 			throw new UnauthorizedException(
 				'Неверный токен или срок его действия истек'
 			)
 		}
-		const user = await this.userModel.findById(result._id)
-		const tokens = await this.issueTokenPair(String(user._id))
+		const user = await this.userModel.findById(result._id) // Ищем юзера
+		const tokens = await this.issueTokenPair(String(user._id)) // Создаем токен
 
 		return {
 			user: this.returnUserFields(user),
