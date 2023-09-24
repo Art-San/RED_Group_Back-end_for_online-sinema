@@ -37,4 +37,30 @@ export class UserService {
 		await user.save()
 		return { message: 'Пользователь успешно обновлен' }
 	}
+
+	async getCount() {
+		return this.UserModel.find().count().exec()
+	}
+
+	async getAll(searchTerm?: string) {
+		let options = {}
+
+		if (searchTerm) {
+			options = {
+				$or: [
+					{
+						email: new RegExp(searchTerm, 'i'), // i значит независимо от регистра
+					},
+				],
+			}
+		}
+		return this.UserModel.find(options)
+			.select('-password -updatedAt -__v') // Эти поля не получаем
+			.sort({ createdAt: 'desc' }) // сначало новые
+			.exec()
+	}
+
+	async delete(id: string) {
+		return this.UserModel.findByIdAndDelete(id).exec()
+	}
 }
