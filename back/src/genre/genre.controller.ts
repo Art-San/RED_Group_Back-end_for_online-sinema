@@ -48,7 +48,7 @@ export class GenreController {
 	async create() {
 		return this.genreService.create()
 	}
-	//18:53
+
 	@UsePipes(new ValidationPipe())
 	@Put(':id')
 	@HttpCode(200)
