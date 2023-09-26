@@ -17,7 +17,7 @@ export class FileController {
 	@Post()
 	@HttpCode(200)
 	@Auth('admin')
-	@UseInterceptors(FileInterceptor('image')) // получаем файлы из запроса
+	@UseInterceptors(FileInterceptor('file')) // получаем файлы из запроса
 	async uploadFile(
 		@UploadedFile() file: Express.Multer.File,
 		@Query('folder') folder?: string
