@@ -5,7 +5,7 @@ export class CreateGenreDto {
 	name: string
 
 	@IsString()
-	slog: string
+	slug: string
 
 	@IsString()
 	description: string
