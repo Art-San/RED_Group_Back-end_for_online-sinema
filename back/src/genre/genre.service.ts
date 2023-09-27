@@ -11,7 +11,11 @@ export class GenreService {
 	) {}
 
 	async bySlug(slug: string) {
-		return this.GenreModel.findOne({ slug }).exec()
+		const doc = await this.GenreModel.findOne({ slug }).exec() // DOC - универсальное обозначение
+		if (!doc) {
+			throw new NotFoundException('Ни чего не найдено')
+		}
+		return doc
 	}
 
 	async getAll(searchTerm?: string) {
