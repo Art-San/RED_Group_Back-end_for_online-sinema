@@ -11,7 +11,11 @@ export class ActorService {
 	) {}
 
 	async bySlug(slug: string) {
-		return this.ActorModel.findOne({ slug }).exec()
+		const doc = await this.ActorModel.findOne({ slug }).exec() // DOC - универсальное обозначение
+		if (!doc) {
+			throw new NotFoundException('По слагу Actor не найден')
+		}
+		return doc
 	}
 
 	async getAll(searchTerm?: string) {
@@ -42,7 +46,7 @@ export class ActorService {
 	async byId(_id: string) {
 		const actor = await this.ActorModel.findById(_id)
 		if (!actor) {
-			throw new NotFoundException('Жанр не найден')
+			throw new NotFoundException('Актер не найден')
 		}
 		return actor
 	}
@@ -59,10 +63,10 @@ export class ActorService {
 
 	async update(_id: string, dto: ActorDto) {
 		const updateDoc = await this.ActorModel.findByIdAndUpdate(_id, dto, {
-			new: true, // означает что будем отдавать измененный actor
+			new: true, // означает что будем отдавать измененного актера
 		}).exec()
 
-		if (!updateDoc) throw new NotFoundException('Жанр не найден')
+		if (!updateDoc) throw new NotFoundException('Актер не найден')
 
 		return updateDoc
 	}
@@ -71,7 +75,7 @@ export class ActorService {
 		// const deleteDoc = this.ActorModel.findByIdAndDelete(id).exec()
 		const deleteDoc = await this.ActorModel.findByIdAndDelete(id).exec()
 
-		if (!deleteDoc) throw new NotFoundException('Жанр не найден')
+		if (!deleteDoc) throw new NotFoundException('Актер не найден')
 
 		return deleteDoc
 	}

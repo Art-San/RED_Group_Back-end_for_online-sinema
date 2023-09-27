@@ -13,7 +13,7 @@ export class GenreService {
 	async bySlug(slug: string) {
 		const doc = await this.GenreModel.findOne({ slug }).exec() // DOC - универсальное обозначение
 		if (!doc) {
-			throw new NotFoundException('Ни чего не найдено')
+			throw new NotFoundException('По слагу Genre не найден')
 		}
 		return doc
 	}
