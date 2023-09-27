@@ -2,8 +2,8 @@ import { MovieModel } from './movie.model'
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from 'nestjs-typegoose'
-
 import { UpdateMovieDto } from './update.movie.dto'
+import { Types } from 'mongoose'
 
 @Injectable()
 export class MovieService {
@@ -30,35 +30,54 @@ export class MovieService {
 			.populate('actors genres')
 			.exec()
 	}
-	// 02: 38
+
 	async bySlug(slug: string) {
 		const doc = await this.MovieModel.findOne({ slug })
 			.populate('actors genres')
-			.exec() // populate('actors genres') расказывал про это в первом интенсиве
+			.exec() // populate('actors genres') Рассказывал про это в первом интенсиве
 		if (!doc) {
 			throw new NotFoundException('По слагу Movie не найден')
 		}
 		return doc
 	}
 
-	async bySlug(slug: string) {
-		const doc = await this.MovieModel.findOne({ slug })
-			.populate('actors genres')
-			.exec()
-		if (!doc) {
-			throw new NotFoundException('По слагу Movie не найден')
+	async byActor(actorId: string) {
+		const docs = await this.MovieModel.find({ actors: actorId }).exec() // По одному актеру
+		if (!docs) {
+			throw new NotFoundException('Movies не найден')
 		}
-		return doc
+		return docs
 	}
 
-	async bySlug(slug: string) {
-		const doc = await this.MovieModel.findOne({ slug })
-			.populate('actors genres')
-			.exec()
-		if (!doc) {
-			throw new NotFoundException('По слагу Movie не найден')
+	async byGenre(genreIds: Types.ObjectId[]) {
+		const docs = await this.MovieModel.find({
+			genres: { $in: genreIds },
+		}).exec()
+
+		if (!docs) {
+			throw new NotFoundException('Movies не найден')
 		}
-		return doc
+		return docs
+	}
+
+	async getMostPopular() {
+		return this.MovieModel.find({ countOpened: { $gt: 0 } })
+			.sort({ countOpened: -1 })
+			.populate('genres')
+			.exec()
+	}
+
+	async updateCountOpened(slug: string) {
+		const updateDoc = await this.MovieModel.findOneAndUpdate(
+			{ slug },
+			{
+				$inc: { countOpened: 1 },
+			}
+		).exec()
+
+		if (!updateDoc) throw new NotFoundException('Фильм не найден')
+
+		return updateDoc
 	}
 
 	/*Admin place*/
@@ -73,7 +92,13 @@ export class MovieService {
 
 	async create() {
 		const defaultValue: UpdateMovieDto = {
-			name: '',
+			bigPoster: '',
+			actors: [],
+			genres: [],
+			description: '',
+			poster: '',
+			title: '',
+			videoUrl: '',
 			slug: '',
 		}
 		const doc = await this.MovieModel.create(defaultValue)
@@ -81,17 +106,18 @@ export class MovieService {
 	}
 
 	async update(_id: string, dto: UpdateMovieDto) {
+		/*TODO: TELEGRAM notification*/
+
 		const updateDoc = await this.MovieModel.findByIdAndUpdate(_id, dto, {
 			new: true, // означает что будем отдавать измененного актера
 		}).exec()
 
-		if (!updateDoc) throw new NotFoundException('Фильм не найден')
+		if (!updateDoc) throw new NotFoundException('Movie не найден')
 
 		return updateDoc
 	}
 
 	async delete(id: string) {
-		// const deleteDoc = this.MovieModel.findByIdAndDelete(id).exec()
 		const deleteDoc = await this.MovieModel.findByIdAndDelete(id).exec()
 
 		if (!deleteDoc) throw new NotFoundException('Фильм не найден')
