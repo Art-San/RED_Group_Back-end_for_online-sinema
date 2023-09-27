@@ -17,7 +17,7 @@ export class Parameters {
 	country: string
 }
 
-export class CreateMovieDto {
+export class UpdateMovieDto {
 	@IsString()
 	poster: string
 
