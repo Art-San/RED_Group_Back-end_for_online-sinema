@@ -1,4 +1,3 @@
-import { CreateGenreDto } from './genre.inteface'
 import { GenreService } from './genre.service'
 import {
 	Body,
@@ -15,6 +14,7 @@ import {
 } from '@nestjs/common'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { idValidationPipe } from 'src/pipes/id.validation.pipe'
+import { CreateGenreDto } from './dto/create-genre.dto'
 
 @Controller('genres')
 export class GenreController {

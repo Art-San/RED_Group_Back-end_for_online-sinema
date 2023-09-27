@@ -1,17 +1,6 @@
-import { IsString } from 'class-validator'
-
-export class CreateGenreDto {
-	@IsString()
-	name: string
-
-	@IsString()
+export interface ICollection {
+	_id: string
+	image: string
+	title: string
 	slug: string
-
-	@IsString()
-	description: string
-
-	@IsString()
-	icon: string
 }
-
-// 3:03
