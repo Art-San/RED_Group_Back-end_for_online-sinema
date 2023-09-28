@@ -6,9 +6,9 @@ import {
 	IsString,
 } from 'class-validator'
 
-export class Parameters {
+export class Parameter {
 	@IsNumber()
-	poster: number
+	year: number
 
 	@IsNumber()
 	duration: number
@@ -17,7 +17,7 @@ export class Parameters {
 	country: string
 }
 
-export class UpdateMovieDto {
+export class CreateMovieDto {
 	@IsString()
 	poster: string
 
@@ -28,21 +28,25 @@ export class UpdateMovieDto {
 	title: string
 
 	@IsString()
-	slug: string
+	description: string
 
 	@IsObject()
-	parameters?: Parameters
+	parameters?: Parameter
 
-	@IsString()
-	videoUrl: string
-
-	@IsArray() // Будет массив
-	@IsString({ each: true }) // Каждый элемент массива строка
+	@IsArray()
+	@IsString({ each: true })
 	genres: string[]
 
 	@IsArray()
 	@IsString({ each: true })
 	actors: string[]
 
+	@IsString()
+	videoUrl: string
+
+	@IsString()
+	slug: string
+
+	@IsBoolean()
 	isSendTelegram?: boolean
 }
