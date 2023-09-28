@@ -52,7 +52,7 @@ export class MovieService {
 	}
 
 	// Этот вариант из урока, почему у него не работало так я и не понял.
-	// нельзя передавать не правильный ID
+	// нельзя передавать не правильный ID вылетит 500
 	async byGenres(genreIds: Types.ObjectId[]) {
 		const docs = await this.movieModel
 			.find({

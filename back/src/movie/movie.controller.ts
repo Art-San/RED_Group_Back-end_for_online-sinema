@@ -30,7 +30,7 @@ export class MovieController {
 	async byActor(@Param('actorId', idValidationPipe) actorId: Types.ObjectId) {
 		return this.movieService.byActor(actorId)
 	}
-	// нельзя передавать не правильный ID
+	// нельзя передавать не правильный ID вылетит 500
 	@Post('by-genres')
 	@HttpCode(200)
 	async byGenres(@Body('genreIds') genreIds: Types.ObjectId[]) {
