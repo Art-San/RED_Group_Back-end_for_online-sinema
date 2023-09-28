@@ -34,12 +34,36 @@ export class ActorService {
 			}
 		}
 
-		/*TODO: Aggregation будет связана с моделью МУВ*/
-		return this.actorModel
-			.find(options)
-			.select('-updatedAt -__v') // Эти поля не получаем
-			.sort({ createdAt: 'desc' }) // сначало новые
-			.exec()
+		// https://mongoosejs.com/docs/api/aggregate.html
+		/*TODO: Aggregation будет связана с моделью МУВИ*/
+		return (
+			this.actorModel
+				.aggregate()
+				.match(options)
+				.lookup({
+					// делаем перебор Pipeline
+					from: 'Movie', // взяли модель Movie
+					localField: '_id',
+					foreignField: 'actors', // actors являются айдишниками
+					as: 'movies',
+				})
+				// .lookup({
+				// 	from: 'Movie',
+				// 	let: { id: '$_id' },
+				// 	pipeline: [
+				// 		{
+				// 			$match: { $expr: { $in: ['$$id', '$actors'] } },
+				// 		},
+				// 	],
+				// 	as: 'movies',
+				// })
+				.addFields({
+					countMovies: { $size: '$movies' },
+				})
+				.project({ __v: 0, updatedAt: 0, movies: 0 }) // project вместо select убираем
+				.sort({ createdAt: -1 }) // "desc и asc" тут не работают
+				.exec()
+		)
 	}
 
 	/*Admin place*/
