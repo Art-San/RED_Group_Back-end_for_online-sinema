@@ -28,9 +28,6 @@ export class UpdateMovieDto {
 	title: string
 
 	@IsString()
-	description: string
-
-	@IsString()
 	slug: string
 
 	@IsObject()
@@ -42,10 +39,10 @@ export class UpdateMovieDto {
 	@IsArray() // Будет массив
 	@IsString({ each: true }) // Каждый элемент массива строка
 	genres: string[]
+
 	@IsArray()
 	@IsString({ each: true })
 	actors: string[]
 
-	@IsBoolean()
 	isSendTelegram?: boolean
 }

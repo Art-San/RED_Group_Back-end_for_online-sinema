@@ -7,7 +7,7 @@ export interface MovieModel extends Base {}
 
 export class Parameters {
 	@prop()
-	poster: number
+	year: number
 
 	@prop()
 	duration: number
@@ -25,9 +25,6 @@ export class MovieModel extends TimeStamps {
 
 	@prop()
 	title: string
-
-	@prop()
-	description: string
 
 	@prop({ unique: true })
 	slug: string

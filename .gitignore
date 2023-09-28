@@ -2,6 +2,7 @@
 back/dist
 back/node_modules
 back/test
+back/uploads
 
 # Logs
 logs
