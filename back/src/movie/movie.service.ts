@@ -51,6 +51,8 @@ export class MovieService {
 		return docs
 	}
 
+	// Этот вариант из урока, почему у него не работало так я и не понял.
+	// нельзя передавать не правильный ID
 	async byGenres(genreIds: Types.ObjectId[]) {
 		const docs = await this.movieModel
 			.find({
@@ -63,6 +65,13 @@ export class MovieService {
 		}
 		return docs
 	}
+
+	// Этот вариант из конечного  проекта
+	// async byGenres(
+	// 	genreIds: Types.ObjectId[]
+	// ): Promise<DocumentType<MovieModel>[]> {
+	// 	return this.movieModel.find({ genres: { $in: genreIds } }).exec()
+	// }
 
 	async getMostPopular() {
 		return this.movieModel
