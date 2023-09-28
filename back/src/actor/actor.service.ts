@@ -7,11 +7,11 @@ import { ActorDto } from './actor.dto'
 @Injectable()
 export class ActorService {
 	constructor(
-		@InjectModel(ActorModel) private readonly ActorModel: ModelType<ActorModel>
+		@InjectModel(ActorModel) private readonly actorModel: ModelType<ActorModel>
 	) {}
 
 	async bySlug(slug: string) {
-		const doc = await this.ActorModel.findOne({ slug }).exec() // DOC - универсальное обозначение
+		const doc = await this.actorModel.findOne({ slug }).exec() // DOC - универсальное обозначение
 		if (!doc) {
 			throw new NotFoundException('По слагу Actor не найден')
 		}
@@ -35,7 +35,8 @@ export class ActorService {
 		}
 
 		/*TODO: Aggregation будет связана с моделью МУВИ*/
-		return this.ActorModel.find(options)
+		return this.actorModel
+			.find(options)
 			.select('-updatedAt -__v') // Эти поля не получаем
 			.sort({ createdAt: 'desc' }) // сначало новые
 			.exec()
@@ -44,7 +45,7 @@ export class ActorService {
 	/*Admin place*/
 
 	async byId(_id: string) {
-		const actor = await this.ActorModel.findById(_id)
+		const actor = await this.actorModel.findById(_id)
 		if (!actor) {
 			throw new NotFoundException('Актер не найден')
 		}
@@ -57,14 +58,16 @@ export class ActorService {
 			slug: '',
 			photo: '',
 		}
-		const actor = await this.ActorModel.create(defaultValue)
+		const actor = await this.actorModel.create(defaultValue)
 		return actor._id
 	}
 
 	async update(_id: string, dto: ActorDto) {
-		const updateDoc = await this.ActorModel.findByIdAndUpdate(_id, dto, {
-			new: true, // означает что будем отдавать измененного актера
-		}).exec()
+		const updateDoc = await this.actorModel
+			.findByIdAndUpdate(_id, dto, {
+				new: true, // означает что будем отдавать измененного актера
+			})
+			.exec()
 
 		if (!updateDoc) throw new NotFoundException('Актер не найден')
 
@@ -72,8 +75,8 @@ export class ActorService {
 	}
 
 	async delete(id: string) {
-		// const deleteDoc = this.ActorModel.findByIdAndDelete(id).exec()
-		const deleteDoc = await this.ActorModel.findByIdAndDelete(id).exec()
+		// const deleteDoc = this.actorModel.findByIdAndDelete(id).exec()
+		const deleteDoc = await this.actorModel.findByIdAndDelete(id).exec()
 
 		if (!deleteDoc) throw new NotFoundException('Актер не найден')
 
