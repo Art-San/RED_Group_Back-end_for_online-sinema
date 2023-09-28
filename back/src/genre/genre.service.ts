@@ -7,11 +7,11 @@ import { CreateGenreDto } from './dto/create-genre.dto'
 @Injectable()
 export class GenreService {
 	constructor(
-		@InjectModel(GenreModel) private readonly GenreModel: ModelType<GenreModel>
+		@InjectModel(GenreModel) private readonly genreModel: ModelType<GenreModel>
 	) {}
 
 	async bySlug(slug: string) {
-		const doc = await this.GenreModel.findOne({ slug }).exec() // DOC - универсальное обозначение
+		const doc = await this.genreModel.findOne({ slug }).exec() // DOC - универсальное обозначение
 		if (!doc) {
 			throw new NotFoundException('По слагу Genre не найден')
 		}
@@ -36,7 +36,8 @@ export class GenreService {
 				],
 			}
 		}
-		return this.GenreModel.find(options)
+		return this.genreModel
+			.find(options)
 			.select('-updatedAt -__v') // Эти поля не получаем
 			.sort({ createdAt: 'desc' }) // сначало новые
 			.exec()
@@ -52,7 +53,7 @@ export class GenreService {
 	/*Admin place*/
 
 	async byId(_id: string) {
-		const genre = await this.GenreModel.findById(_id)
+		const genre = await this.genreModel.findById(_id)
 		if (!genre) {
 			throw new NotFoundException('Жанр не найден')
 		}
@@ -66,14 +67,16 @@ export class GenreService {
 			description: '',
 			icon: '',
 		}
-		const genre = await this.GenreModel.create(defaultValue)
+		const genre = await this.genreModel.create(defaultValue)
 		return genre._id
 	}
 
 	async update(_id: string, dto: CreateGenreDto) {
-		const updateDoc = await this.GenreModel.findByIdAndUpdate(_id, dto, {
-			new: true, // означает что будем отдавать измененный genre
-		}).exec()
+		const updateDoc = await this.genreModel
+			.findByIdAndUpdate(_id, dto, {
+				new: true, // означает что будем отдавать измененный genre
+			})
+			.exec()
 
 		if (!updateDoc) throw new NotFoundException('Жанр не найден')
 
@@ -81,8 +84,8 @@ export class GenreService {
 	}
 
 	async delete(id: string) {
-		// const deleteDoc = this.GenreModel.findByIdAndDelete(id).exec()
-		const deleteDoc = await this.GenreModel.findByIdAndDelete(id).exec()
+		// const deleteDoc = this.genreModel.findByIdAndDelete(id).exec()
+		const deleteDoc = await this.genreModel.findByIdAndDelete(id).exec()
 
 		if (!deleteDoc) throw new NotFoundException('Жанр не найден')
 
