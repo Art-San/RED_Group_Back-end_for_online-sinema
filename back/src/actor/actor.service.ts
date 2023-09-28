@@ -34,7 +34,7 @@ export class ActorService {
 			}
 		}
 
-		/*TODO: Aggregation будет связана с моделью МУВИ*/
+		/*TODO: Aggregation будет связана с моделью МУВ*/
 		return this.actorModel
 			.find(options)
 			.select('-updatedAt -__v') // Эти поля не получаем
