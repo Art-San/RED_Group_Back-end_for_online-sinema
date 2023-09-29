@@ -99,6 +99,12 @@ export class MovieService {
 		return updateDoc
 	}
 
+	async updateRating(id: Types.ObjectId, newRating: number) {
+		return this.movieModel
+			.findByIdAndUpdate(id, { rating: newRating }, { new: true })
+			.exec()
+	}
+
 	/*Admin place*/
 
 	async byId(_id: string) {

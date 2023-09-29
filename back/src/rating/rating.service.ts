@@ -14,7 +14,7 @@ export class RatingService {
 		private readonly movieService: MovieService // MovieService предварительно заимпортили в rating.module.ts, здесь просто описываем
 	) {}
 
-	async getMovieByUser(movieId: Types.ObjectId, userId: Types.ObjectId) {
+	async getMovieValueByUser(movieId: Types.ObjectId, userId: Types.ObjectId) {
 		return this.ratingModel
 			.findOne({ movieId: movieId, userId: userId })
 			.select('value')
@@ -22,7 +22,7 @@ export class RatingService {
 			.then((data) => (data ? data.value : 0)) // если не будет этого выражения то может приходить undefined
 	}
 
-	async averageRatingMovie(movieId: Types.ObjectId | string) {
+	async averageRatingByMovie(movieId: Types.ObjectId | string) {
 		const ratingMovie: RatingModel[] = await this.ratingModel
 			.aggregate()
 			.match({
@@ -40,7 +40,7 @@ export class RatingService {
 		const { movieId, value } = dto
 
 		const newRating = await this.ratingModel
-			.findByIdAndUpdate(
+			.findOneAndUpdate(
 				{ movieId, userId },
 				{
 					movieId: movieId,
@@ -55,9 +55,9 @@ export class RatingService {
 			)
 			.exec() // это обязательно
 
-		const averageRating = await this.averageRatingMovie(movieId)
+		const averageRating = await this.averageRatingByMovie(movieId)
 
-		// TODO: await.this.movieService
+		await this.movieService.updateRating(movieId, averageRating)
 
 		return newRating
 	}
