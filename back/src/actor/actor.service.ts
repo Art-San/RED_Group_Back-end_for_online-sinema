@@ -35,7 +35,7 @@ export class ActorService {
 		}
 
 		// https://mongoosejs.com/docs/api/aggregate.html
-		/*TODO: Aggregation будет связана с моделью МУВИ*/
+		/*Aggregation будет связана с моделью МУВИ*/
 		return (
 			this.actorModel
 				.aggregate()
