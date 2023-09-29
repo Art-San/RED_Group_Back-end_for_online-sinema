@@ -9,10 +9,10 @@ import { Types } from 'mongoose'
 @Injectable()
 export class UserService {
 	constructor(
-		@InjectModel(UserModel) private readonly UserModel: ModelType<UserModel>
+		@InjectModel(UserModel) private readonly userModel: ModelType<UserModel>
 	) {}
 	async byId(_id: string) {
-		const user = await this.UserModel.findById(_id)
+		const user = await this.userModel.findById(_id)
 		if (!user) {
 			throw new NotFoundException('Юзер не найден')
 		}
@@ -21,7 +21,7 @@ export class UserService {
 
 	async updateProfile(_id: string, dto: UpdateUserDto) {
 		const user = await this.byId(_id)
-		const isSameUser = await this.UserModel.findOne({ email: dto.email })
+		const isSameUser = await this.userModel.findOne({ email: dto.email })
 		if (isSameUser && String(_id) !== String(isSameUser._id)) {
 			throw new NotFoundException('Email занят')
 		}
@@ -40,7 +40,7 @@ export class UserService {
 	}
 
 	async getCount() {
-		return this.UserModel.find().count().exec()
+		return this.userModel.find().count().exec()
 	}
 
 	async getAll(searchTerm?: string) {
@@ -55,19 +55,20 @@ export class UserService {
 				],
 			}
 		}
-		return this.UserModel.find(options)
+		return this.userModel
+			.find(options)
 			.select('-password -updatedAt -__v') // Эти поля не получаем
 			.sort({ createdAt: 'desc' }) // сначало новые
 			.exec()
 	}
 
 	async delete(id: string) {
-		return this.UserModel.findByIdAndDelete(id).exec()
+		return this.userModel.findByIdAndDelete(id).exec()
 	}
 
 	async toggleFavorite(movieId: Types.ObjectId, user: UserModel) {
 		const { _id, favorites } = user
-		await this.UserModel.findByIdAndUpdate(_id, {
+		await this.userModel.findByIdAndUpdate(_id, {
 			favorites: favorites.includes(movieId) // проверяем есть ль такой ID в избранном
 				? favorites.filter((id) => String(id) !== String(movieId)) // если есть то удаляем
 				: [...favorites, movieId], // Если нет, то добавляем
@@ -75,7 +76,24 @@ export class UserService {
 		})
 	}
 
-	async getFavoriteMovies(_id: Types.ObjectId) {
-		return this.UserModel.findById(_id, 'favorites') // второй параметр 'favorites' говорит что мы хотим получить
+	async getFavoriteMovies(_id: string) {
+		return this.userModel
+			.findById(_id, 'favorites')
+			.populate({
+				path: 'favorites', // Копнули глубже
+				populate: {
+					path: 'genres',
+				},
+			})
+			.exec()
+			.then((data) => {
+				return data.favorites
+			})
 	}
+
+	// async getFavoriteMovies(_id: Types.ObjectId) {
+	// return await this.userModel.findById(_id, 'favorites') // второй параметр 'favorites' говорит что мы хотим получить
+	// 	.populated('favorites') // Копнули но не глубоко
+	// 	.exec()
+	// }
 }
