@@ -85,8 +85,9 @@ export class UserService {
 					path: 'genres',
 				},
 			})
-			.exec()
+			.exec() // Казалось бы все, но нет
 			.then((data) => {
+				// Получаем из data именно favorites
 				return data.favorites
 			})
 	}
