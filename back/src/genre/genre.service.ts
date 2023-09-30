@@ -1,13 +1,16 @@
 import { GenreModel } from './genre.model'
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from 'nestjs-typegoose'
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { CreateGenreDto } from './dto/create-genre.dto'
+import { MovieService } from 'src/movie/movie.service'
+import { ICollection } from './genre.inteface'
 
 @Injectable()
 export class GenreService {
 	constructor(
-		@InjectModel(GenreModel) private readonly genreModel: ModelType<GenreModel>
+		@InjectModel(GenreModel) private readonly genreModel: ModelType<GenreModel>,
+		private readonly movieService: MovieService
 	) {}
 
 	async bySlug(slug: string) {
@@ -45,9 +48,24 @@ export class GenreService {
 
 	async getCollections() {
 		const genres = await this.getAll()
-		const collections = genres
-		/** FIXME: NEED write*/
-		return collections
+
+		const collections = await Promise.all(
+			genres.map(async (genre) => {
+				const moviesByGenre = await this.movieService.byGenres([genre._id])
+
+				const result: ICollection = {
+					_id: String(genre._id),
+					image: moviesByGenre[0].bigPoster,
+					slug: genre.slug,
+					title: genre.name,
+				}
+
+				return result
+			})
+		)
+
+		// return collections
+		throw new HttpException('ошибка здесь', 200)
 	}
 
 	/*Admin place*/
