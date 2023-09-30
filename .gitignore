@@ -3,6 +3,7 @@ back/dist
 back/node_modules
 back/test
 back/uploads
+back/src/config/telegram.config.ts
 
 # Logs
 logs

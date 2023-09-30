@@ -1,1 +1,4 @@
-export interface Telegram {}
+export interface Telegram {
+	chatId: string
+	token: string
+}
