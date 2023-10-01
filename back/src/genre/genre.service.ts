@@ -4,7 +4,7 @@ import { InjectModel } from 'nestjs-typegoose'
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { CreateGenreDto } from './dto/create-genre.dto'
 import { MovieService } from 'src/movie/movie.service'
-import { ICollection } from './genre.inteface'
+import { ICollection } from './genre.interface'
 
 @Injectable()
 export class GenreService {
@@ -45,8 +45,30 @@ export class GenreService {
 			.sort({ createdAt: 'desc' }) // сначало новые
 			.exec()
 	}
+	//FIXME: ОШИБКА Cannot read properties of undefined (reading 'bigPoster')
+	// async getCollections() {
+	// 	const genres = await this.getAll()
 
-	async getCollections() {
+	// 	const collections = await Promise.all(
+	// 		genres.map(async (genre) => {
+	// 			const moviesByGenre = await this.movieService.byGenres([genre._id])
+
+	// 			const result: ICollection = {
+	// 				_id: String(genre._id),
+	// 				image: moviesByGenre[0].bigPoster,
+	// 				slug: genre.slug,
+	// 				title: genre.name,
+	// 			}
+
+	// 			return result
+	// 		})
+	// 	)
+
+	// 	// return collections
+	// 	throw new HttpException('ошибка здесь', 200)
+	// }
+
+	async getCollections(): Promise<ICollection[]> {
 		const genres = await this.getAll()
 
 		const collections = await Promise.all(
@@ -55,17 +77,16 @@ export class GenreService {
 
 				const result: ICollection = {
 					_id: String(genre._id),
-					image: moviesByGenre[0].bigPoster,
-					slug: genre.slug,
 					title: genre.name,
+					slug: genre.slug,
+					image: moviesByGenre[0].bigPoster,
 				}
 
 				return result
 			})
 		)
 
-		// return collections
-		throw new HttpException('ошибка здесь', 200)
+		return collections
 	}
 
 	/*Admin place*/

@@ -38,3 +38,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 .env
+
+backend-advanced.zip
+backend-advanced-ORIGIN.zip
