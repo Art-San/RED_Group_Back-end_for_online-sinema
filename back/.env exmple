@@ -1,0 +1,10 @@
+NODE_ENV = development
+
+MONGO_URI = mongodb://127.0.0.1:27017/online-cinema
+# MONGO_URI = mongodb://127.0.0.1:27017/online-cinema
+# MONGO_URI = "mongodb+srv://artsanmcc:1234@cluster0.nxpog4s.mongodb.net/"
+
+JWT_SECRET = mvossvsutio
+
+TELEGRAM_TOKEN = '&&&&&&&&&&&&' #  bot ArtSanWest++++bot 
+CHAT_ID = '-345855858' # chat "Тест 30-09-23"
