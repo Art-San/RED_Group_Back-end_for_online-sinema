@@ -50,7 +50,7 @@ export class RatingService {
 				{
 					new: true, // что бы вернулось новое
 					upsert: true, // для того что бы создать новое если нету
-					setDefaultsOnInsert: true, // для того что бы создать новое если нету
+					setDefaultsOnInsert: true, // для того что бы создать новое если нет
 				}
 			)
 			.exec() // это обязательно
