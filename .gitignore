@@ -4,7 +4,6 @@ back/node_modules
 back/test
 back/uploads
 
-
 # Logs
 logs
 *.log
@@ -38,6 +37,3 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 .env
-
-backend-advanced.zip
-backend-advanced-ORIGIN.zip
