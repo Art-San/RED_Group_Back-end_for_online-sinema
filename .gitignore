@@ -2,7 +2,8 @@
 back/dist
 back/node_modules
 back/test
-back/uploads
+back/uploads/actors
+back/uploads/movies
 
 
 # Logs
